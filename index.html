@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Text Extractor</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Extract Financial</h1>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Upload PDF</h2>
+        </div>
+        <div class="card-content">
+          <form id="upload-form" class="space-y-4">
+            <div id="drop-area" class="drop-area">
+              <input id="pdf-file" type="file" accept="application/pdf" class="hidden">
+              <div class="upload-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="file-icon">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <line x1="10" y1="9" x2="8" y2="9"></line>
+                </svg>
+                <div id="file-info">
+                  <p class="text-sm font-medium">Click to upload PDF</p>
+                  <p class="text-xs text-muted">PDF files only</p>
+                </div>
+              </div>
+            </div>
+
+            <div id="error-alert" class="alert alert-error hidden">
+              <p id="error-message"></p>
+            </div>
+
+            <button type="submit" id="submit-button" class="button">
+              <span id="button-text">Upload</span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div id="result-card" class="card hidden">
+        <div class="card-header">
+          <h2 class="card-title">Extracted Text</h2>
+        </div>
+        <div class="card-content">
+          <div id="extracted-text" class="text-output"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
