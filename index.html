@@ -8,8 +8,16 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 </head>
 <body>
+  <nav class="navbar">
+    <div class="container nav-container">
+      <div class="logo-container">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EiH0Mj4c9ilPpdqZfg4ERrbeOBOaM6.png" alt="AI IN ACTION" class="logo">
+      </div>
+    </div>
+  </nav>
+  
   <div class="container">
-    <h1 class="title">Extract Financial Data</h1>
+    <h1 class="title">Extract Financial</h1>
 
     <div class="grid">
       <div class="card">
@@ -39,6 +47,19 @@
               <p id="error-message"></p>
             </div>
 
+            <!-- Progress bar container (hidden by default) -->
+            <div id="progress-container" class="progress-container hidden">
+              <div class="progress-label">
+                <span id="progress-status">Uploading...</span>
+                <span id="progress-percentage">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div id="progress-bar-fill" class="progress-bar-fill"></div>
+              </div>
+
+              <span id="progress-time-left" style="display:block; text-align:right; font-size:0.75rem; color:var(--muted-foreground);">60 sec left</span>
+            </div>
+
             <button type="submit" id="submit-button" class="button">
               <span id="button-text">Upload</span>
             </button>
@@ -48,7 +69,7 @@
 
       <div id="result-card" class="card hidden">
         <div class="card-header">
-          <h2 class="card-title">Requested Data</h2>
+          <h2 class="card-title">Financials</h2>
         </div>
         <div class="card-content">
           <div id="extracted-text" class="text-output"></div>
