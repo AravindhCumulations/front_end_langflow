@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
   
       const FLOW_ID = "05c28217-bb7d-466e-bee6-9041ff9c9742";
-      const LANGFLOW_HOST = "https://35.184.50.162:7860";
+      const LANGFLOW_HOST = "http://35.184.50.162:7860";
   
       if (!selectedFile) {
         showError("Please select a PDF file");
