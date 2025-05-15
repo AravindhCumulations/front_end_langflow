@@ -25,11 +25,15 @@ document.addEventListener("DOMContentLoaded", () => {
   let ESTIMATED_TOTAL_TIME = 60; // default fallback
   let startTime = null;
 
+  let currentProgress = 0;      // 👈 NEW global
+  let simulationStopped = false;  // 👈 NEW global
+
   // Event Listeners
   dropArea.addEventListener("click", () => fileInput.click());
 
   fileInput.addEventListener("change", (e) => {
     if (e.target.files && e.target.files[0]) {
+      stopProgressSimulation();
       selectedFile = e.target.files[0];
       updateFileInfo(selectedFile.name);
       hideError();
@@ -109,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const fileId = uploadData.id;
 
       updateProgressStatus("Analyzing...");
-      setProgress(50);
 
       const runPayload = {
         output_type: "chat",
@@ -128,7 +131,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!runRes.ok) throw new Error(`Flow run failed: ${runRes.status}`);
 
       updateProgressStatus("Finalizing results...");
-      setProgress(80);
 
       await fetch(`${LANGFLOW_HOST}/api/v2/files/${fileId}`, {
         method: "DELETE",
@@ -137,6 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const runData = await runRes.json();
       setProgress(100);
+      simulationStopped = true;
+
       updateProgressStatus("Completed!");
 
       const resultText = runData.outputs?.[0]?.outputs?.[0]?.results?.message?.text ?? "No output generated.";
@@ -171,34 +175,55 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setProgress(percent) {
+    // Don't allow simulation to overwrite final backend progress
+    if (simulationStopped && percent < currentProgress) return;
+
+    currentProgress = percent;
     progressBarFill.style.width = `${percent}%`;
     progressPercentage.textContent = `${Math.round(percent)}%`;
     if (startTime) {
-      const elapsed = (Date.now() - startTime) / 1000;
-      const remaining = Math.max(0, ESTIMATED_TOTAL_TIME - elapsed);
-      if (progressTimeLeft) progressTimeLeft.textContent = `${Math.ceil(remaining)} sec left`;
+        const elapsed = (Date.now() - startTime) / 1000;
+        const remaining = Math.max(0, ESTIMATED_TOTAL_TIME - elapsed);
+        if (progressTimeLeft) progressTimeLeft.textContent = `${Math.ceil(remaining)} sec left`;
+    }
+
+    // Stop simulation after backend completes
+    if (percent >= 100) {
+        simulationStopped = true;
     }
   }
+
 
   function updateProgressStatus(status) {
     progressStatus.textContent = status;
   }
 
   function startProgressSimulation() {
-    stopProgressSimulation();
+    if (progressInterval) return;  // prevent double interval
+    simulationStopped = false;     // 👈 reset flag
+
     startTime = Date.now();
     progressInterval = setInterval(() => {
-      const elapsed = (Date.now() - startTime) / 1000;
-      let progress = (elapsed / ESTIMATED_TOTAL_TIME) * 100;
-      if (progress >= 95) progress = 95;
-      setProgress(progress);
+        if (simulationStopped) return;  // 👈 STOP simulation if backend took over
+
+        const elapsed = (Date.now() - startTime) / 1000;
+        let simulatedProgress = (elapsed / ESTIMATED_TOTAL_TIME) * 100;
+        if (simulatedProgress >= 90) simulatedProgress = 90;   // OR 95 if you prefer
+
+        if (simulatedProgress > currentProgress) {
+            setProgress(simulatedProgress);
+        }
     }, 200);
   }
+
 
   function stopProgressSimulation() {
     if (progressInterval) {
       clearInterval(progressInterval);
       progressInterval = null;
+
+      simulationStopped = true;  // ✅ reset for next run
+      currentProgress = 0;
     }
   }
 
