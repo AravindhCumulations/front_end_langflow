@@ -113,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const fileId = uploadData.id
 
       updateProgressStatus("Analyzing...")
-      console.log(filePath);
       
       const runPayload = {
         output_type: "chat",
@@ -131,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(runPayload),
       })
       if (!runRes.ok) throw new Error(`Flow run failed: ${runRes.status}`)
-      if (!runRes.ok) console.log("run res not ok");
       
       
       updateProgressStatus("Finalizing results...")
@@ -146,16 +144,8 @@ document.addEventListener("DOMContentLoaded", () => {
       simulationStopped = true
 
       updateProgressStatus("Completed!")
-      console.log("logging run data");
-      
-      console.log(runData);
       
       const resultText = runData.outputs?.[0]?.outputs?.[0]?.results?.message?.text ?? "No output generated."
-
-      // Parse the result text to extract the financial metrics
-      console.log("Text");
-      
-      console.log(resultText);
       
       const financialData = parseFinancialData(resultText)
       displayFinancialMetrics(financialData)
@@ -177,7 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Remove unexpected prefixes like 'json' or triple quotes
       cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/```$/, '');
-      console.log("cleaned " +  cleaned);
       
       const data = JSON.parse(cleaned);
       return {
